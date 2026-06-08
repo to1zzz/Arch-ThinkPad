@@ -20,77 +20,81 @@ window#waybar {
     border-radius: 0;
 }
 
-/* Все модули (старые + новые) */
-#memory, #cpu, #custom-temperature, #custom-date, #clock, #language, #tray,
-#custom-power, #network, #pulseaudio, #battery {
+#language,
+#memory,
+#cpu,
+#custom-temperature,
+#battery,
+#clock,
+#power-profiles-daemon,
+#tray {
     margin: 6px 2px;
     padding: 0 11px;
     border-radius: 6px;
     min-height: 29px;
 }
 
-/* --- НОВЫЕ МОДУЛИ --- */
-#network {
-    background: linear-gradient(to bottom, #d5c4a1, #b8a785);
-    color: #282828;
-}
-#network.disconnected {
+#tray {
+    padding: 0 8px;
+    font-size: 12px;
     background: linear-gradient(to bottom, #4f4844, #3f3835);
     color: #ebdbb2;
 }
 
-#pulseaudio {
+#language {
+    background: linear-gradient(to bottom, #4f4844, #3f3835);
+    color: #ebdbb2;
+    font-family: "JetBrainsMono Nerd Font Propo", "Noto Color Emoji", sans-serif;
+}
+
+/* Цвета модулей */
+#memory {
+    background: linear-gradient(to bottom, #e0af4a, #c49632);
+    color: #282828;
+}
+
+#cpu {
     background: linear-gradient(to bottom, #d5c4a1, #b8a785);
     color: #282828;
 }
-#pulseaudio.muted {
-    background: linear-gradient(to bottom, #4f4844, #3f3835);
-    color: #ebdbb2;
+
+#custom-temperature {
+    background: linear-gradient(to bottom, #83a598, #6f8f8a);
+    color: #282828;
 }
 
 #battery {
     background: linear-gradient(to bottom, #97b87a, #7d9e62);
     color: #282828;
 }
-#battery.warning {
-    background: linear-gradient(to bottom, #e0af4a, #c49632);
-    color: #282828;
-}
-#battery.critical {
-    background: linear-gradient(to bottom, #ea6962, #d65d5d);
-    color: #282828;
-}
 
-/* --- СУЩЕСТВУЮЩИЕ СТИЛИ (без изменений) --- */
-#custom-date {
-    background: linear-gradient(to bottom, #97b87a, #7d9e62);
-    color: #282828;
-}
 #clock {
     background: linear-gradient(to bottom, #d5c4a1, #b8a785);
     color: #282828;
 }
-#custom-temperature {
-    background: linear-gradient(to bottom, #83a598, #6f8f8a);
-    color: #282828;
-}
-#custom-power {
-    background: linear-gradient(to bottom, #83a598, #6f8f8a);
-    color: #282828;
-    font-size: 19px;
-    margin-right: 4px;
-}
-#language {
-    background: linear-gradient(to bottom, #4f4844, #3f3835);
-    color: #ebdbb2;
-    font-family: "JetBrainsMono Nerd Font Propo", "Noto Color Emoji", sans-serif;
-}
-#tray {
-    background: linear-gradient(to bottom, #4f4844, #3f3835);
+
+/* Профили питания */
+#power-profiles-daemon {
+    background: linear-gradient(to bottom, #555, #444);
     color: #ebdbb2;
 }
 
-/* Рабочие столы */
+#power-profiles-daemon.power-saver {
+    background: linear-gradient(to bottom, #97b87a, #7d9e62);
+    color: #282828;
+}
+
+#power-profiles-daemon.balanced {
+    background: linear-gradient(to bottom, #83a598, #6f8f8a);
+    color: #282828;
+}
+
+#power-profiles-daemon.performance {
+    background: linear-gradient(to bottom, #e0af4a, #c49632);
+    color: #282828;
+}
+
+/* Workspaces */
 #workspaces {
     margin-left: 2px;
 }
@@ -110,7 +114,7 @@ window#waybar {
     background: linear-gradient(to bottom, #675e57, #514a44);
 }
 
-/* Всплывающие подсказки */
+/* Tooltips */
 tooltip {
     background: #282828;
     border: 1px solid #504945;
