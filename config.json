@@ -1,80 +1,23 @@
 {
-    // === Настройки панели ===
     "layer": "top",
     "position": "top",
     "height": 39,
 
-    // === Модули ===
     "modules-left": [
         "niri/workspaces",
         "niri/window"
     ],
-    "modules-center": [],
     "modules-right": [
         "tray",
         "niri/language",
-        "network",
-        "pulseaudio",
-        "battery",
         "memory",
         "cpu",
         "custom/temperature",
-        "custom/date",
+        "battery",
         "clock",
-        "custom/power"
+        "power-profiles-daemon"
     ],
 
-    // === НОВЫЙ МОДУЛЬ: СЕТЬ (динамическая иконка) ===
-    "network": {
-        "format-wifi": "{icon} {essid}",
-        "format-ethernet": "󰈁 {ifname}",
-        "format-disconnected": "󰤮 Отключено",
-        "format-icons": [
-            "󰤯", // 0–20%
-            "󰤟", // 21–40%
-            "󰤢", // 41–60%
-            "󰤥", // 61–80%
-            "󰤨"  // 81–100%
-        ],
-        "tooltip-format": "{{ifname}} via {gwaddr}\nIP: {ipaddr}\nСигнал: {signalStrength}%",
-        "on-click": "foot -e nmtui"
-    },
-
-    // === НОВЫЙ МОДУЛЬ: ЗВУК ===
-    "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": "󰝟 Muted",
-        "format-icons": {
-            "headphones": "󰋋",
-            "hands-free": "󰋋",
-            "headset": "󰋋",
-            "phone": "󰂯",
-            "portable": "󰂯",
-            "car": "󰄉",
-            "default": ["󰕿", "󰖀", "󰕾"]
-        },
-        "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
-        "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%",
-        "on-click": "pavucontrol"
-    },
-
-    // === НОВЫЙ МОДУЛЬ: БАТАРЕЯ ===
-    "battery": {
-        "format": "{icon} {capacity}%",
-        "format-charging": "󰂄 {capacity}%",
-        "format-plugged": "󰚥 {capacity}%",
-        "format-icons": [
-            "󰂎", "󰁺", "󰁻", "󰁼", "󰁽",
-            "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"
-        ],
-        "states": {
-            "warning": 25,
-            "critical": 10
-        },
-        "on-click": "foot -e upower -i /org/freedesktop/UPower/devices/battery_BAT0"
-    },
-
-    // === СУЩЕСТВУЮЩИЕ МОДУЛИ (адаптированы для Intel) ===
     "niri/workspaces": {
         "format": "{value}",
         "all-outputs": false,
@@ -84,27 +27,6 @@
         "format": "{}",
         "max-length": 50
     },
-    "clock": {
-        "format": " {:%H:%M}"
-    },
-    "custom/date": {
-        "format": " {}",
-        "interval": 60,
-        "exec": "LC_TIME=en_US.UTF-8 date '+%a, %d %B'"
-    },
-    "cpu": {
-        "format": " {usage}%",
-        "interval": 2
-    },
-    // ИСПРАВЛЕНО: теперь работает на Intel (coretemp)
-    "custom/temperature": {
-        "exec": "for d in /sys/class/hwmon/hwmon*; do if [ \"$(cat \"$d/name\" 2>/dev/null)\" = \"coretemp\" ]; then ext=\"$d/temp1_input\"; break; fi; done; t=$(cat \"$ext\" 2>/dev/null); if [ -n \"$t\" ]; then t=$((t/1000)); if [ $t -lt 50 ]; then i=\"\"; elif [ $t -lt 75 ]; then i=\"\"; else i=\"\"; fi; printf \"%s %d°C\\n\" \"$i\" \"$t\"; else echo \"󰋊 N/A\"; fi",
-        "interval": 5,
-        "format": "{}"
-    },
-    "memory": {
-        "format": " {}%"
-    },
     "tray": {
         "spacing": 6
     },
@@ -113,9 +35,47 @@
         "format-ru": "🇷🇺",
         "min-length": 0
     },
-    "custom/power": {
-        "format": "⏻",
-        "tooltip": false,
-        "on-click": "exec $HOME/.config/waybar/power-menu.sh"
+
+    "memory": {
+        "format": " {}%",
+        "interval": 2
+    },
+    "cpu": {
+        "format": " {usage}%",
+        "interval": 2
+    },
+    "custom/temperature": {
+        "exec": "sensors | grep 'Package id 0:' | awk '{print $4}' | tr -d '+' | cut -d'.' -f1",
+        "interval": 5,
+        "format": " {}°C",
+        "tooltip": true
+    },
+    "battery": {
+        "interval": 10,
+        "format": "{icon} {capacity}%",
+        "format-icons": ["", "", "", "", ""],
+        "tooltip-format": "{time}",
+        "states": {
+            "warning": 20,
+            "critical": 10
+        }
+    },
+    "clock": {
+        "format": " {0:%H:%M}",
+        "format-alt": " {0:%a, %d %B}",
+        "rotate": true,
+        "interval": 1,
+        "tooltip-format": "<big>{0:%Y %B}</big>\n<big><b>{0:%A, %d %B %Y}</b></big>\n<tt><small>{calendar}</small></tt>"
+    },
+    "power-profiles-daemon": {
+        "format": "{icon}",
+        "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+        "tooltip": true,
+        "format-icons": {
+            "default": "",
+            "performance": "",
+            "balanced": "",
+            "power-saver": ""
+        }
     }
 }
