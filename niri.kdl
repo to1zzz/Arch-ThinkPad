@@ -10,7 +10,7 @@ input {
         xkb {
             // [USER] РУ/ЕН Раскладка и переключение по Alt+Shift
             layout "us,ru"
-            options "grp:alt_shift_toggle"
+            options "grp:caps_toggle"
         }
         numlock
         repeat-delay 200
@@ -20,18 +20,18 @@ input {
     touchpad {
         tap
         natural-scroll
-        // off; dwt; dwtp; drag false; drag-lock
-        // accel-speed 0.2; accel-profile "flat"; scroll-method "two-finger"
-        // disabled-on-external-mouse
-    }
+        dwt
+        accel-speed 0.7    // Увеличиваем скорость, например, до 0.7
+        accel-profile "flat" // (Опционально) Делает движение более линейным
+    } 
 
     mouse {
         // off; natural-scroll; accel-speed 0.2; accel-profile "flat"; scroll-method "no-scroll"
     }
 
     trackpoint {
-        // off; natural-scroll; accel-speed 0.2; accel-profile "flat"
-        // scroll-method "on-button-down"; scroll-button 273; scroll-button-lock; middle-emulation
+      scroll-method "on-button-down"
+      scroll-button 273 
     }
 
     // warp-mouse-to-focus
@@ -44,9 +44,21 @@ input {
 // [USER] Конфигурация мониторов
 
 
+// Встроенный экран ThinkPad
 output "eDP-1" {
     mode "1920x1080@60"
-    position x=1920 y=0
+    // Вместо жестких координат используем автоматическое выравнивание
+    // Например, встроенный будет справа от внешнего, если он подключен
+    position x=1920 y=0 
+}
+
+// Универсальное правило для любого подключенного внешнего монитора
+// Он автоматически встанет на позицию (0,0), то есть слева от eDP-1
+output "HDMI-A-1" {
+    position x=0 y=0
+}
+output "DP-1" { // Часто используется при подключении через Type-C/Док-станцию
+    position x=0 y=0
 }
 
 // ----------------------------------------------------------------------------
@@ -78,7 +90,7 @@ layout {
         inactive-color "#504945"
         urgent-color "#3c3836"
 
-       active-gradient from="#83a598" to="#6f8f8a" angle=90
+       active-gradient from="#83a598" to="#6f8f8a" angle=180
     }
 
     shadow {
@@ -99,7 +111,7 @@ window-rule {
 
 animations { 
     // off
-    // slowdown 1.5
+    // slowdown 1.25
     // workspace-switch {
     //    spring damping-ratio=0.8 stiffness=1000 epsilon=0.0001
     // }
@@ -121,6 +133,10 @@ spawn-at-startup "waybar"
 spawn-at-startup "sh" "-c" "dbus-update-activation-environment --all"
 spawn-at-startup "swaybg" "-i" "/home/to1z/Downloads/wallpaper.png" "-m" "fill"
 spawn-at-startup "nm-applet"
+spawn-at-startup "swayidle" "-w" \
+    "timeout" "300" "niri msg action power-off-monitors" \
+    "timeout" "600" "swaylock" \
+    "before-sleep" "swaylock"
 // ----------------------------------------------------------------------------
 //  5. WINDOW RULES
 // ----------------------------------------------------------------------------
@@ -195,29 +211,29 @@ binds {
     Mod+L     { focus-column-right; }
 
     // Стрелочки & Vim-хоткеи (Перемещение окон)
-    Mod+Ctrl+Left  { move-column-left; }
-    Mod+Ctrl+Down  { move-window-down; }
-    Mod+Ctrl+Up    { move-window-up; }
-    Mod+Ctrl+Right { move-column-right; }
-    Mod+Ctrl+H     { move-column-left; }
-    Mod+Ctrl+J     { move-window-down; }
-    Mod+Ctrl+K     { move-window-up; }
-    Mod+Ctrl+L     { move-column-right; }
+    Mod+Shift+Left  { move-column-left; }
+    Mod+Shift+Down  { move-window-down; }
+    Mod+Shift+Up    { move-window-up; }
+    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+H     { move-column-left; }
+    Mod+Shift+J     { move-window-down; }
+    Mod+Shift+K     { move-window-up; }
+    Mod+Shift+L     { move-column-right; }
 
     Mod+Home      { focus-column-first; }
     Mod+End       { focus-column-last; }
-    Mod+Ctrl+Home { move-column-to-first; }
-    Mod+Ctrl+End  { move-column-to-last; }
+    Mod+Shift+Home { move-column-to-first; }
+    Mod+Shift+End  { move-column-to-last; }
 
     // --- Управление Мониторами ---
-    Mod+Shift+Left  { focus-monitor-left; }
-    Mod+Shift+Down  { focus-monitor-down; }
-    Mod+Shift+Up    { focus-monitor-up; }
-    Mod+Shift+Right { focus-monitor-right; }
-    Mod+Shift+H     { focus-monitor-left; }
-    Mod+Shift+J     { focus-monitor-down; }
-    Mod+Shift+K     { focus-monitor-up; }
-    Mod+Shift+L     { focus-monitor-right; }
+    Mod+Ctrl+Left  { focus-monitor-left; }
+    Mod+Ctrl+Down  { focus-monitor-down; }
+    Mod+Ctrl+Up    { focus-monitor-up; }
+    Mod+Ctrl+Right { focus-monitor-right; }
+    Mod+Ctrl+H     { focus-monitor-left; }
+    Mod+Ctrl+J     { focus-monitor-down; }
+    Mod+Ctrl+K     { focus-monitor-up; }
+    Mod+Ctrl+L     { focus-monitor-right; }
 
     Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
     Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
@@ -233,15 +249,15 @@ binds {
     Mod+Page_Up        { focus-workspace-up;  }
     Mod+U              { focus-workspace-down; }
     Mod+I              { focus-workspace-up; }
-    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
-    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
-    Mod+Ctrl+U         { move-column-to-workspace-down; }
-    Mod+Ctrl+I         { move-column-to-workspace-up; }
+    Mod+Shift+Page_Down { move-column-to-workspace-down; }
+    Mod+Shift+Page_Up   { move-column-to-workspace-up; }
+    Mod+Shift+U         { move-column-to-workspace-down; }
+    Mod+Shift+I         { move-column-to-workspace-up; }
 
-    Mod+Shift+Page_Down { move-workspace-down; }
-    Mod+Shift+Page_Up   { move-workspace-up; }
-    Mod+Shift+U         { move-workspace-down; }
-    Mod+Shift+I         { move-workspace-up; }
+    Mod+Ctrl+Page_Down { move-workspace-down; }
+    Mod+Ctrl+Page_Up   { move-workspace-up; }
+    Mod+Ctrl+U         { move-workspace-down; }
+    Mod+Ctrl+I         { move-workspace-up; }
 
     // Навигация по воркспейсам цифрами (1-9)
     Mod+1 { focus-workspace 1; }
@@ -254,15 +270,15 @@ binds {
     Mod+8 { focus-workspace 8; }
     Mod+9 { focus-workspace 9; }
     
-    Mod+Ctrl+1 { move-column-to-workspace 1; }
-    Mod+Ctrl+2 { move-column-to-workspace 2; }
-    Mod+Ctrl+3 { move-column-to-workspace 3; }
-    Mod+Ctrl+4 { move-column-to-workspace 4; }
-    Mod+Ctrl+5 { move-column-to-workspace 5; }
-    Mod+Ctrl+6 { move-column-to-workspace 6; }
-    Mod+Ctrl+7 { move-column-to-workspace 7; }
-    Mod+Ctrl+8 { move-column-to-workspace 8; }
-    Mod+Ctrl+9 { move-column-to-workspace 9; }
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
 
     // --- Управление Колонками (Слияние, размеры, режимы) ---
     Mod+BracketLeft  { consume-or-expel-window-left; }
@@ -329,9 +345,9 @@ binds {
     Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
 }
 
-
 switch-events {
-    lid-close {
-        spawn "swaylock"
+    // При закрытии: блокируем экран и отправляем в сон
+    lid-close { 
+        spawn "sh" "-c" "swaylock & systemctl suspend" 
     }
 }
